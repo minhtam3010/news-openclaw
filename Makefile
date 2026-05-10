@@ -1,4 +1,11 @@
 run:
 	uv run main.py
 
-.PHONY: run
+package:
+	uv add -r requirements.txt
+
+commit:
+	git add .
+	git commit
+
+.PHONY: run commit package

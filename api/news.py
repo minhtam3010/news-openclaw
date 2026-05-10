@@ -1,10 +1,8 @@
 import os
 import httpx
-from dotenv import load_dotenv
 from entity.news import Article, NewsResponse
 from bs4 import BeautifulSoup
 
-load_dotenv()
 valid_keys = Article.__annotations__.keys()
 
 

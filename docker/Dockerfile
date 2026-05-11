@@ -13,5 +13,4 @@ RUN pip install mangum
 # 4. Copy your code
 COPY . .
 
-# 5. Point to the 'handler' variable we created in main.py
-CMD [ "main.handler" ]
+CMD [ "main.lambda_handler" ]

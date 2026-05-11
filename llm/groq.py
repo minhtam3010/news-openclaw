@@ -1,5 +1,4 @@
 from groq import Groq
-from llm.system import newsSystemInstruction
 import os
 
 client = Groq(
@@ -7,15 +6,15 @@ client = Groq(
 )
 
 
-def callLLM(prompt):
+def callLLM(prompt, systemInstruction):
     completion = client.chat.completions.create(
         model="openai/gpt-oss-120b",
         messages=[
-            {"role": "system", "content": newsSystemInstruction},
+            {"role": "system", "content": systemInstruction},
             {"role": "user", "content": prompt},
         ],
         temperature=0,
-        max_completion_tokens=6000,
+        max_completion_tokens=1000,
         top_p=1,
         stream=False,
         stop=None,

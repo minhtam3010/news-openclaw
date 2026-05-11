@@ -6,4 +6,4 @@ fastapi
 slack_bolt
 uvicorn
 google-genai
-
+mangum

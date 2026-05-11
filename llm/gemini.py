@@ -14,7 +14,7 @@ def callLLM(prompt, systemInstruction):
         types.Content(
             role="user",
             parts=[
-                types.Part.from_text(text="""INSERT_INPUT_HERE"""),
+                types.Part.from_text(text=prompt),
             ],
         ),
     ]
@@ -22,16 +22,15 @@ def callLLM(prompt, systemInstruction):
         thinking_config=types.ThinkingConfig(
             thinking_budget=0,
         ),
+        system_instruction=systemInstruction,
     )
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=contents,
+            config=generate_content_config,
+        )
 
-    response = client.models.generate_content(
-        model=model,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            # This is how you pass your system instruction in the new SDK
-            system_instruction=systemInstruction,
-            thinking_config=types.ThinkingConfig(thinking_budget=0),
-        ),
-    )
-
-    return response.text
+        return response.text
+    except Exception:
+        return "Server is in high demand, please try it again"

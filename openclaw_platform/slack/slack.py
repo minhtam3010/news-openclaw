@@ -9,6 +9,7 @@ from api.news import fetchNewsContent, fetchArticleContent
 app = App(
     token=os.getenv("SLACK_BOT_TOKEN"),
     signing_secret=os.getenv("SLACK_SIGNING_KEY"),
+    process_before_response=True,
 )
 
 handler = SlackRequestHandler(app)
@@ -24,24 +25,30 @@ def handle_all_messages(message, say):
     # user_id = message.get("user")
     text = message.get("text")
 
+    print("DEBUG: PROCESSING TOPIC")
     topic = callLLM(
         text,
         topicSystemInstruction,
     )
+    print(f"DEBUG: DONE PROCESSING TOPIC: {topic}")
 
     responseObj = fetchNewsContent(searchText=topic)
     if responseObj is None:
         say(f"Sorry, I couldn't find any news for: {topic}")
         return
 
+    print("DEBUG: PROCESSING ARTICLES")
     articles = responseObj.results
     contents = []
     for i in range(len(articles)):
         content = fetchArticleContent(articles[i].link)
         contents.append(content)
 
-    print("contents:",contents)
+    print("DEBUG: DONE PROCESSING ARTICLES")
+
     all_articles_text = "\n\n---\n\n".join(contents)
+
+    print("DEBUG: PROCESSING GEMINI")
     summary = callLLM(all_articles_text, newsSystemInstruction, "gemini")
 
     say(f"Topic: {topic}\n{summary}")

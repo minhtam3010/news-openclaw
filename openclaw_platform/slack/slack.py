@@ -55,10 +55,12 @@ def handle_all_messages(message, say, request):
     print("DEBUG: PROCESSING GEMINI")
     summary = callLLM(message, newsSystemInstruction, "gemini")
 
+    clean_summary = summary.replace("**", "*")
+
     blocks = [
         {"type": "header", "text": {"type": "plain_text", "text": f"📊 Tóm tắt: {topic}"}},
         {"type": "divider"},
-        {"type": "section", "text": {"type": "mrkdwn", "text": summary}},
+        {"type": "section", "text": {"type": "mrkdwn", "text": clean_summary}},
         {"type": "divider"},
         {"type": "context", "elements": [{"type": "mrkdwn", "text": "🤖 _Cập nhật tự động bởi NewsBot_"}]}
     ]

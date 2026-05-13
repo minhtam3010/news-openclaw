@@ -21,7 +21,10 @@ def handle_metions(event, say):
 
 
 @app.message(re.compile(".*"))
-def handle_all_messages(message, say):
+def handle_all_messages(message, say, request):
+    if request.headers.get("x-slack-retry-num"):
+        return
+
     # user_id = message.get("user")
     text = message.get("text")
 
@@ -52,4 +55,12 @@ def handle_all_messages(message, say):
     print("DEBUG: PROCESSING GEMINI")
     summary = callLLM(message, newsSystemInstruction, "gemini")
 
-    say(f"Topic: {topic}\n{summary}")
+    blocks = [
+        {"type": "header", "text": {"type": "plain_text", "text": f"📊 Tóm tắt: {topic}"}},
+        {"type": "divider"},
+        {"type": "section", "text": {"type": "mrkdwn", "text": summary}},
+        {"type": "divider"},
+        {"type": "context", "elements": [{"type": "mrkdwn", "text": "🤖 _Cập nhật tự động bởi NewsBot_"}]}
+    ]
+
+    say(blocks=blocks, text=f"Summary for {topic}")

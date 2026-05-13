@@ -47,8 +47,9 @@ def handle_all_messages(message, say):
     print("DEBUG: DONE PROCESSING ARTICLES")
 
     all_articles_text = "\n\n---\n\n".join(contents)
+    message = f"User message:{text}\nTopic:{topic}\nContent:{all_articles_text}"
 
     print("DEBUG: PROCESSING GEMINI")
-    summary = callLLM(all_articles_text, newsSystemInstruction, "gemini")
+    summary = callLLM(message, newsSystemInstruction, "gemini")
 
     say(f"Topic: {topic}\n{summary}")

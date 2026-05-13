@@ -3,6 +3,11 @@ from openclaw_platform.slack.slack import handler as slack_handler
 import uvicorn
 from fastapi import FastAPI, Request
 from mangum import Mangum
+from pydantic import BaseModel
+from test import testGetMessage
+
+class MessageRequest(BaseModel):
+    text: str
 
 api = FastAPI()
 lambda_handler = Mangum(api)
@@ -15,6 +20,10 @@ def read_root():
 async def slack_events(request: Request):
     return await slack_handler.handle(request)
 
+@api.post("/message")
+def getMessage(request: MessageRequest):
+    testGetMessage(request.text)
+    
 def main():
     uvicorn.run(
         "main:api",
